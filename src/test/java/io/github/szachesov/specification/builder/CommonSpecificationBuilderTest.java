@@ -67,6 +67,17 @@ class CommonSpecificationBuilderTest extends SpecificationBuilderTest {
   }
 
   @Test
+  void inner_getAll_innerSpecificationIsNull() {
+    final Specification<User> spec =
+        SpecificationBuilder.<User>builder().inner(null, BooleanOperator.AND).build();
+
+    final EntityGraph eg = DynamicEntityGraph.loading(List.of(User_.POSTS, User_.PROFILE));
+    final List<User> entities = userRepository.findAll(spec, eg);
+
+    assertThat(entities).hasSize(TestData.USERS.size());
+  }
+
+  @Test
   void inner_getResult_basePredicateAndInnerOrPredicates() {
     final String username1 = TestConstants.ADMIN_USERNAME;
     final String username2 = TestConstants.USER_1_USERNAME;

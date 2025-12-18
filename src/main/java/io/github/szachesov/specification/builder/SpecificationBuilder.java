@@ -63,9 +63,7 @@ public class SpecificationBuilder<T> {
    * @param spec specification representing grouped logical predicates.
    */
   public SpecificationBuilder<T> andInner(final Specification<T> spec) {
-    final InnerSpecification<T> inner = new InnerSpecification<>(spec, BooleanOperator.AND);
-    innerSpecifications.add(inner);
-    return this;
+    return inner(spec, BooleanOperator.AND);
   }
 
   /**
@@ -76,9 +74,7 @@ public class SpecificationBuilder<T> {
    * @param spec specification representing grouped logical predicates.
    */
   public SpecificationBuilder<T> orInner(final Specification<T> spec) {
-    final InnerSpecification<T> inner = new InnerSpecification<>(spec, BooleanOperator.OR);
-    innerSpecifications.add(inner);
-    return this;
+    return inner(spec, BooleanOperator.OR);
   }
 
   /**
@@ -91,6 +87,7 @@ public class SpecificationBuilder<T> {
    */
   public SpecificationBuilder<T> inner(
       final Specification<T> spec, final BooleanOperator operator) {
+    if (spec == null) return this;
     final InnerSpecification<T> inner = new InnerSpecification<>(spec, operator);
     innerSpecifications.add(inner);
     return this;
