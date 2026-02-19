@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Sergei Zachesov and others.
+ * Copyright 2025-present Sergei Zachesov and others.
  * https://github.com/sergei-zachesov/spring-data-jpa-specification-builder
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -57,7 +57,7 @@ public abstract class CompositeSpecification<T, P> implements Specification<T> {
   protected final List<String> columns;
   protected final boolean isNot;
   protected final JoinType joinType;
-  BooleanOperator connection;
+  LogicalOperator connection;
   private final boolean isFetch;
 
   @Setter(AccessLevel.PACKAGE)
@@ -160,7 +160,7 @@ public abstract class CompositeSpecification<T, P> implements Specification<T> {
   public abstract static class Builder<BuilderT extends Builder<BuilderT>> {
 
     protected final List<String> columns;
-    private BooleanOperator connection = BooleanOperator.AND;
+    private LogicalOperator connection = LogicalOperator.AND;
     private boolean isNot;
     private JoinType joinType = JoinType.INNER;
     private boolean isFetch;
@@ -174,7 +174,7 @@ public abstract class CompositeSpecification<T, P> implements Specification<T> {
      *
      * @param connection boolean operator to use for connecting conditions (AND/OR)
      */
-    public BuilderT connection(final BooleanOperator connection) {
+    public BuilderT connection(final LogicalOperator connection) {
       this.connection = connection;
       return self();
     }

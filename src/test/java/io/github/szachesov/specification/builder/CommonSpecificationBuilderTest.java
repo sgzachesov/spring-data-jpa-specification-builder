@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Sergei Zachesov and others.
+ * Copyright 2025-present Sergei Zachesov and others.
  * https://github.com/sergei-zachesov/spring-data-jpa-specification-builder
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,8 +17,8 @@
 
 package io.github.szachesov.specification.builder;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-import static org.junit.Assert.assertThrows;
 
 import com.cosium.spring.data.jpa.entity.graph.domain2.DynamicEntityGraph;
 import com.cosium.spring.data.jpa.entity.graph.domain2.EntityGraph;
@@ -47,9 +47,8 @@ class CommonSpecificationBuilderTest extends SpecificationBuilderTest {
         SpecificationBuilder.<User>builder().isNotNull(List.of(User_.POSTS, Post_.TITLE)).build();
 
     final Sort sort = Sort.by(DbUtils.joinPath(User_.POSTS, Post_.TITLE));
-
-    assertThrows(
-        InvalidDataAccessResourceUsageException.class, () -> userRepository.findAll(spec, sort));
+    assertThatThrownBy(() -> userRepository.findAll(spec, sort))
+        .isInstanceOf(InvalidDataAccessResourceUsageException.class);
   }
 
   @Test
@@ -69,7 +68,7 @@ class CommonSpecificationBuilderTest extends SpecificationBuilderTest {
   @Test
   void inner_getAll_innerSpecificationIsNull() {
     final Specification<User> spec =
-        SpecificationBuilder.<User>builder().inner(null, BooleanOperator.AND).build();
+        SpecificationBuilder.<User>builder().inner(null, LogicalOperator.AND).build();
 
     final EntityGraph eg = DynamicEntityGraph.loading(List.of(User_.POSTS, User_.PROFILE));
     final List<User> entities = userRepository.findAll(spec, eg);
@@ -84,12 +83,12 @@ class CommonSpecificationBuilderTest extends SpecificationBuilderTest {
     final Specification<User> innerSpec =
         SpecificationBuilder.<User>builder()
             .equal(User_.USERNAME, username1)
-            .equal(User_.USERNAME, username2, b -> b.connection(BooleanOperator.OR))
+            .equal(User_.USERNAME, username2, b -> b.connection(LogicalOperator.OR))
             .build();
 
     final Specification<User> spec =
         SpecificationBuilder.<User>builder()
-            .inner(innerSpec, BooleanOperator.AND)
+            .inner(innerSpec, LogicalOperator.AND)
             .isNotNull(User_.POSTS)
             .build();
 
@@ -109,7 +108,7 @@ class CommonSpecificationBuilderTest extends SpecificationBuilderTest {
     final Specification<User> innerSpec =
         SpecificationBuilder.<User>builder()
             .equal(User_.USERNAME, username1)
-            .equal(User_.USERNAME, username2, b -> b.connection(BooleanOperator.OR))
+            .equal(User_.USERNAME, username2, b -> b.connection(LogicalOperator.OR))
             .build();
 
     final Specification<User> spec =

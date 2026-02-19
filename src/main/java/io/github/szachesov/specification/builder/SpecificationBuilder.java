@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Sergei Zachesov and others.
+ * Copyright 2025-present Sergei Zachesov and others.
  * https://github.com/sergei-zachesov/spring-data-jpa-specification-builder
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -63,7 +63,7 @@ public class SpecificationBuilder<T> {
    * @param spec specification representing grouped logical predicates.
    */
   public SpecificationBuilder<T> andInner(final Specification<T> spec) {
-    return inner(spec, BooleanOperator.AND);
+    return inner(spec, LogicalOperator.AND);
   }
 
   /**
@@ -74,7 +74,7 @@ public class SpecificationBuilder<T> {
    * @param spec specification representing grouped logical predicates.
    */
   public SpecificationBuilder<T> orInner(final Specification<T> spec) {
-    return inner(spec, BooleanOperator.OR);
+    return inner(spec, LogicalOperator.OR);
   }
 
   /**
@@ -86,7 +86,7 @@ public class SpecificationBuilder<T> {
    * @param operator logical of the condition connection.
    */
   public SpecificationBuilder<T> inner(
-      final Specification<T> spec, final BooleanOperator operator) {
+      final Specification<T> spec, final LogicalOperator operator) {
     if (spec == null) return this;
     final InnerSpecification<T> inner = new InnerSpecification<>(spec, operator);
     innerSpecifications.add(inner);
@@ -661,19 +661,21 @@ public class SpecificationBuilder<T> {
 
   /** Builds a {@link Specification}. */
   public Specification<T> build() {
-    if (specifications.isEmpty() && innerSpecifications.isEmpty()) return null;
+    Specification<T> compositeSpec = Specification.unrestricted();
+    if (specifications.isEmpty() && innerSpecifications.isEmpty()) {
+      return compositeSpec;
+    }
 
-    Specification<T> result = Specification.unrestricted();
     for (final CompositeSpecification<T, ?> spec : specifications) {
       spec.setDistinct(distinct);
-      result = spec.connection.connect(result, spec);
+      compositeSpec = spec.connection.connect(compositeSpec, spec);
     }
     for (final InnerSpecification<T> inner : innerSpecifications) {
-      result = inner.operator.connect(result, inner.spec);
+      compositeSpec = inner.operator.connect(compositeSpec, inner.spec);
     }
 
-    return result;
+    return compositeSpec;
   }
 
-  private record InnerSpecification<T>(Specification<T> spec, BooleanOperator operator) {}
+  private record InnerSpecification<T>(Specification<T> spec, LogicalOperator operator) {}
 }

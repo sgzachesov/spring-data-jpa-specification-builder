@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Sergei Zachesov and others.
+ * Copyright 2025-present Sergei Zachesov and others.
  * https://github.com/sergei-zachesov/spring-data-jpa-specification-builder
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 /** Enumeration of boolean operators for combining specifications. */
 @AllArgsConstructor
-public enum BooleanOperator {
+public enum LogicalOperator {
   AND {
     @Override
     <T> Specification<T> connect(final Specification<T> spec, final Specification<T> connect) {

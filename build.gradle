@@ -5,16 +5,16 @@ plugins {
     id 'checkstyle'
     id 'pmd'
     id 'jacoco'
-    id 'com.github.spotbugs' version '6.4.4'
-    id "dev.yumi.gradle.licenser" version "2.1.1"
+    id 'com.github.spotbugs' version '6.4.8'
+    id "dev.yumi.gradle.licenser" version "2.2.2"
     id "com.github.ben-manes.versions" version "0.53.0"
     id 'maven-publish'
-    id "com.vanniktech.maven.publish" version "0.35.0"
+    id "com.vanniktech.maven.publish" version "0.36.0"
     id 'signing'
 }
 
 group = 'io.github.sgzachesov'
-version = '3.5.8'
+version = '4.0.2'
 description = "spring-data-jpa-specification-builder is an auxiliary library for building the Spring Specification."
 
 mavenPublishing {
@@ -61,15 +61,15 @@ repositories {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
 ext {
-    springVersion = '3.5.8'
+    springVersion = '4.0.2'
     lombokVersion = '1.18.42'
-    testcontainersVersion = '1.21.3'
-    hibernateVersion = '7.1.4.Final'
+    testcontainersVersion = '1.21.4'
+    hibernateVersion = '7.2.4.Final'
 }
 
 dependencies {
@@ -82,15 +82,16 @@ dependencies {
     testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
 
-    testRuntimeOnly "org.junit.platform:junit-platform-launcher:6.0.0"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher:6.0.3"
     testImplementation "org.springframework.boot:spring-boot-starter-test:${springVersion}"
+    implementation "org.springframework.boot:spring-boot-data-jpa-test:${springVersion}"
     testImplementation "org.springframework.boot:spring-boot-testcontainers:${springVersion}"
     testImplementation "org.testcontainers:junit-jupiter:${testcontainersVersion}"
     testImplementation "org.testcontainers:postgresql:${testcontainersVersion}"
-    testRuntimeOnly 'org.postgresql:postgresql:42.7.8'
+    testRuntimeOnly 'org.postgresql:postgresql:42.7.10'
     testCompileOnly "org.hibernate.orm:hibernate-jpamodelgen:${hibernateVersion}"
     testAnnotationProcessor "org.hibernate.orm:hibernate-jpamodelgen:${hibernateVersion}"
-    testImplementation 'com.cosium.spring.data:spring-data-jpa-entity-graph:3.5.0'
+    testImplementation 'com.cosium.spring.data:spring-data-jpa-entity-graph:4.0.2'
 }
 
 test {
@@ -103,7 +104,7 @@ test {
 }
 
 checkstyle {
-    toolVersion = '11.0.1'
+        toolVersion = '13.2.0'
     configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
     ignoreFailures = false
     maxWarnings = 0

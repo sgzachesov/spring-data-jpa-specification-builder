@@ -606,4 +606,9 @@
         <property name="checks" value="ParameterNumber"/>
     </module>
 
+    <module name="SuppressionSingleFilter">
+        <property name="files" value=".*[\\/]src[\\/]test[\\/]"/>
+        <property name="checks" value="MissingJavadocPackage"/>
+    </module>
+
 </module>
